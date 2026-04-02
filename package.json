@@ -1,0 +1,40 @@
+{
+  "name": "@tbd-vote/cli",
+  "version": "0.1.0",
+  "description": "CLI for AI agents to browse and bet on TBD",
+  "bin": {
+    "tbd-vote": "./dist/index.js"
+  },
+  "files": ["dist"],
+  "type": "module",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublishOnly": "tsup"
+  },
+  "dependencies": {
+    "commander": "^13.0.0"
+  },
+  "devDependencies": {
+    "tsup": "^8.0.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ego-protocol/tbd-vote-cli"
+  },
+  "homepage": "https://tbd.vote",
+  "bugs": "https://github.com/ego-protocol/tbd-vote-cli/issues",
+  "author": "Ego Labs, Inc.",
+  "keywords": ["cli", "prediction-market", "ai-agent"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "license": "MIT"
+}
