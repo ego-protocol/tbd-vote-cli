@@ -28,7 +28,14 @@ export interface CampaignListResponse {
   total: number;
 }
 
-export interface PlaceBetResponse {
+export interface PlaceBetApiResponse {
+  txSignature: string;
+  campaignId: string;
+  optionId: string;
+  amount: number;
+}
+
+export interface PlaceBetResult {
   txSignature: string;
   campaignId: string;
   campaignTitle: string;
