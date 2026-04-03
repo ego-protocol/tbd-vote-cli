@@ -3,6 +3,7 @@ import readline from "node:readline";
 import { setConfig } from "../lib/config.js";
 import { validateApiKey } from "../lib/api.js";
 import { printSuccess, printError } from "../lib/output.js";
+import { API_KEY_PREFIX, WEB_URL } from "../lib/constants.js";
 
 export function registerLogin(program: Command): void {
   program
@@ -28,9 +29,9 @@ async function nonInteractiveLogin(
   apiKey: string,
   jsonMode: boolean,
 ): Promise<void> {
-  if (!apiKey.startsWith("tbd_api_")) {
+  if (!apiKey.startsWith(API_KEY_PREFIX)) {
     printError(
-      new Error('Invalid API key format. Keys start with "tbd_api_".'),
+      new Error(`Invalid API key format. Keys start with "${API_KEY_PREFIX}".`),
       jsonMode,
     );
     return;
@@ -40,7 +41,7 @@ async function nonInteractiveLogin(
   if (!valid) {
     printError(
       new Error(
-        "Invalid API key. Generate a new key at https://tbd.vote/login",
+        `Invalid API key. Generate a new key at ${WEB_URL}/login`,
       ),
       jsonMode,
     );
@@ -62,7 +63,7 @@ async function interactiveLogin(jsonMode: boolean): Promise<void> {
 
   To get started, you need an API key:
 
-  1. Go to https://tbd.vote
+  1. Go to ${WEB_URL}
   2. Log in or sign up using email, Google, Apple, or Twitter
      (external wallets like Phantom are not supported for agent features)
   3. Open Profile \u2192 Agent Access \u2192 Generate API Key
@@ -87,9 +88,9 @@ async function interactiveLogin(jsonMode: boolean): Promise<void> {
     return;
   }
 
-  if (!apiKey.startsWith("tbd_api_")) {
+  if (!apiKey.startsWith(API_KEY_PREFIX)) {
     printError(
-      new Error('Invalid API key format. Keys start with "tbd_api_".'),
+      new Error(`Invalid API key format. Keys start with "${API_KEY_PREFIX}".`),
       jsonMode,
     );
     return;
@@ -101,7 +102,7 @@ async function interactiveLogin(jsonMode: boolean): Promise<void> {
   if (!valid) {
     printError(
       new Error(
-        "Invalid API key. Generate a new key at https://tbd.vote/login",
+        `Invalid API key. Generate a new key at ${WEB_URL}/login`,
       ),
       jsonMode,
     );

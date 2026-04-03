@@ -2,6 +2,7 @@ import { Command } from "commander";
 import { getConfigValue, removeConfigValue } from "../lib/config.js";
 import { validateApiKey } from "../lib/api.js";
 import { printSuccess, printError } from "../lib/output.js";
+import { API_BASE_URL, WEB_URL } from "../lib/constants.js";
 
 export function registerAuth(program: Command): void {
   const auth = program
@@ -27,14 +28,14 @@ export function registerAuth(program: Command): void {
       if (!valid) {
         printError(
           new Error(
-            "Invalid API key. Generate a new key at https://tbd.vote/login",
+            `Invalid API key. Generate a new key at ${WEB_URL}/login`,
           ),
           jsonMode,
         );
         return;
       }
 
-      const apiUrl = getConfigValue("api-url") || "https://production-tbd-bets-api.tbd.vote";
+      const apiUrl = getConfigValue("api-url") || API_BASE_URL;
 
       if (jsonMode) {
         printSuccess(
