@@ -2,6 +2,7 @@ import { Command } from "commander";
 import { getConfigValue } from "../lib/config.js";
 import { apiGet, apiPost } from "../lib/api.js";
 import { printSuccess, printError } from "../lib/output.js";
+import { DEFAULT_BET_SIZE } from "../lib/constants.js";
 import type { Campaign, PlaceBetApiResponse, PlaceBetResult } from "../types.js";
 
 export function registerBet(program: Command): void {
@@ -17,7 +18,7 @@ export function registerBet(program: Command): void {
       try {
         const amount = amountArg
           ? parseFloat(amountArg)
-          : parseFloat(getConfigValue("bet-size") || "1.00");
+          : parseFloat(getConfigValue("bet-size") || DEFAULT_BET_SIZE);
 
         if (isNaN(amount) || amount <= 0) {
           printError(new Error("Invalid bet amount."), jsonMode);

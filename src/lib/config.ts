@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
 import type { Config } from "../types.js";
+import { API_BASE_URL, DEFAULT_BET_SIZE } from "./constants.js";
 
 export function getConfigDir(): string {
   return process.env.TBD_CONFIG_DIR || path.join(os.homedir(), ".tbd");
@@ -12,9 +13,9 @@ function getConfigFile(): string {
 }
 
 const DEFAULTS: Config = {
-  "api-url": "https://production-tbd-bets-api.tbd.vote",
+  "api-url": API_BASE_URL,
   "api-key": null,
-  "bet-size": "1.00",
+  "bet-size": DEFAULT_BET_SIZE,
   "default-status": "open",
   "default-limit": "20",
 };
@@ -28,11 +29,12 @@ export function getConfig(): Config {
   }
 }
 
-export function setConfig(key: keyof Config, value: string | null): void {
+export function setConfig<K extends keyof Config>(key: K, value: Config[K]): void {
   const config = getConfig();
-  (config as Record<string, string | null>)[key] = value;
+  const updatedConfig = { ...config };
+  updatedConfig[key] = value;
   ensureConfigDir();
-  fs.writeFileSync(getConfigFile(), JSON.stringify(config, null, 2) + "\n");
+  fs.writeFileSync(getConfigFile(), JSON.stringify(updatedConfig, null, 2) + "\n");
 }
 
 export function getConfigValue(key: keyof Config): string | null {
@@ -40,11 +42,16 @@ export function getConfigValue(key: keyof Config): string | null {
   return config[key] ?? DEFAULTS[key] ?? null;
 }
 
-export function removeConfigValue(key: keyof Config): void {
+type NullableConfigKey = {
+  [K in keyof Config]: null extends Config[K] ? K : never;
+}[keyof Config];
+
+export function removeConfigValue(key: NullableConfigKey): void {
   const config = getConfig();
-  (config as Record<string, string | null>)[key] = null;
+  const updatedConfig = { ...config };
+  updatedConfig[key] = null;
   ensureConfigDir();
-  fs.writeFileSync(getConfigFile(), JSON.stringify(config, null, 2) + "\n");
+  fs.writeFileSync(getConfigFile(), JSON.stringify(updatedConfig, null, 2) + "\n");
 }
 
 function ensureConfigDir(): void {

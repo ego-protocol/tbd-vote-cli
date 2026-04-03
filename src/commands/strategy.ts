@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { getConfigDir } from "../lib/config.js";
 import { printSuccess, printError } from "../lib/output.js";
+import { STRATEGY_FILENAME } from "../lib/constants.js";
 
 const DEFAULT_TEMPLATE = `# Betting Strategy
 
@@ -24,11 +25,11 @@ Analytical and data-driven. Explain reasoning before placing each bet.
 `;
 
 function getStrategyPath(): string {
-  return path.join(getConfigDir(), "STRATEGY.md");
+  return path.join(getConfigDir(), STRATEGY_FILENAME);
 }
 
 function getDisplayPath(): string {
-  return "~/.tbd/STRATEGY.md";
+  return `~/.tbd/${STRATEGY_FILENAME}`;
 }
 
 export function registerStrategy(program: Command): void {

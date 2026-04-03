@@ -1,4 +1,5 @@
 import { getConfigValue } from "./config.js";
+import { API_BASE_URL } from "./constants.js";
 
 export class ApiError extends Error {
   constructor(
@@ -23,7 +24,7 @@ function getAuthHeaders(): Record<string, string> {
 }
 
 function getBaseUrl(): string {
-  return getConfigValue("api-url") || "https://production-tbd-bets-api.tbd.vote";
+  return getConfigValue("api-url") || API_BASE_URL;
 }
 
 export async function apiGet<T>(
@@ -96,7 +97,7 @@ async function handleResponse<T>(response: Response): Promise<T> {
 }
 
 export async function validateApiKey(apiKey: string): Promise<boolean> {
-  const baseUrl = getConfigValue("api-url") || "https://production-tbd-bets-api.tbd.vote";
+  const baseUrl = getConfigValue("api-url") || API_BASE_URL;
   const url = new URL("/agents/campaigns", baseUrl);
   url.searchParams.set("limit", "1");
 
