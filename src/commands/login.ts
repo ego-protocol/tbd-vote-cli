@@ -1,9 +1,12 @@
 import { Command } from "commander";
 import readline from "node:readline";
-import { setConfig } from "../lib/config.js";
+import fs from "node:fs";
+import path from "node:path";
+import { setConfig, getConfigDir } from "../lib/config.js";
 import { validateApiKey } from "../lib/api.js";
 import { printSuccess, printError } from "../lib/output.js";
-import { API_KEY_PREFIX, WEB_URL } from "../lib/constants.js";
+import { API_KEY_PREFIX, WEB_URL, STRATEGY_FILENAME } from "../lib/constants.js";
+import { DEFAULT_TEMPLATE } from "./strategy.js";
 
 export function registerLogin(program: Command): void {
   program
@@ -49,6 +52,7 @@ async function nonInteractiveLogin(
   }
 
   setConfig("api-key", apiKey);
+  ensureStrategyFile();
   printSuccess(
     jsonMode
       ? { status: "ok", message: "API key verified and saved." }
@@ -110,9 +114,19 @@ async function interactiveLogin(jsonMode: boolean): Promise<void> {
   }
 
   setConfig("api-key", apiKey);
+  ensureStrategyFile();
   process.stdout.write(`
   \u2713 API key verified. You're ready to go!
 
   Try: tbd-vote campaigns list
 \n`);
+}
+
+function ensureStrategyFile(): void {
+  const configDir = getConfigDir();
+  const strategyPath = path.join(configDir, STRATEGY_FILENAME);
+  if (!fs.existsSync(strategyPath)) {
+    fs.mkdirSync(configDir, { recursive: true });
+    fs.writeFileSync(strategyPath, DEFAULT_TEMPLATE);
+  }
 }
