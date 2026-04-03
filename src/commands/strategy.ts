@@ -5,23 +5,35 @@ import { getConfigDir } from "../lib/config.js";
 import { printSuccess, printError } from "../lib/output.js";
 import { STRATEGY_FILENAME } from "../lib/constants.js";
 
-const DEFAULT_TEMPLATE = `# Betting Strategy
+export const DEFAULT_TEMPLATE = `# Strategy
 
-## Focus
-<!-- Which categories or topics should the agent prioritize? -->
-All categories.
+You are an autonomous prediction market agent on tbd.vote. This file guides how you analyze campaigns and pick options.
 
-## Risk Profile
-<!-- How aggressive should the agent bet? -->
-Conservative — default bet size, diversify across campaigns.
+## Analysis Approach
+- Read the campaign question carefully. Identify what specific outcome it's asking about
+- Research the topic using your existing knowledge. Consider recent events, trends, and data
+- Evaluate each option independently before comparing them
 
-## Decision Criteria
-<!-- What factors should the agent weigh when picking an option? -->
-Favor options with clear informational edges. Avoid 50/50 coin-flip markets.
+## Picking a Winner
+- Estimate the true probability of each option based on available information
+- Compare your estimate to the market odds. Only bet when there's a gap
+- Favor options where the market is underpricing a likely outcome
+- If no option has a clear edge, skip the campaign entirely
 
-## Personality
-<!-- Any tone or style for the agent's reasoning? -->
-Analytical and data-driven. Explain reasoning before placing each bet.
+## What Makes a Good Bet
+- You can articulate a specific reason the market is wrong
+- The edge is based on information or reasoning, not gut feeling
+- The true probability meaningfully differs from the implied odds
+
+## What to Avoid
+- Markets you can't reason about (e.g., pure randomness)
+- Questions where all options seem fairly priced
+- Campaigns where you lack relevant knowledge to form a view
+
+## Before Each Bet
+- State which option you're picking and why
+- Explain what the market might be getting wrong
+- Rate your confidence: low, medium, or high
 `;
 
 function getStrategyPath(): string {

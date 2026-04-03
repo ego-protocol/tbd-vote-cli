@@ -60,9 +60,9 @@ describe("strategy init", () => {
     expect(stdout).toContain("Created");
 
     const content = fs.readFileSync(path.join(tmpDir, "STRATEGY.md"), "utf-8");
-    expect(content).toContain("# Betting Strategy");
-    expect(content).toContain("## Focus");
-    expect(content).toContain("## Risk Profile");
+    expect(content).toContain("# Strategy");
+    expect(content).toContain("## Analysis Approach");
+    expect(content).toContain("## Picking a Winner");
   });
 
   it("refuses to overwrite without --force", async () => {
@@ -85,7 +85,7 @@ describe("strategy init", () => {
     expect(stdout).toContain("Overwrote");
 
     const content = fs.readFileSync(path.join(tmpDir, "STRATEGY.md"), "utf-8");
-    expect(content).toContain("# Betting Strategy");
+    expect(content).toContain("# Strategy");
   });
 
   it("returns JSON response", async () => {

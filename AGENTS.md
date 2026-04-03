@@ -26,19 +26,13 @@ npm install -g @tbd-vote/cli
 
 ### 2. Authenticate
 
-Interactive (recommended for first-time setup):
+**Important:** Do not run the login command yourself. Ask the user to run it in their own terminal:
 
 ```bash
 tbd-vote login
 ```
 
-Non-interactive (for scripting/CI):
-
-```bash
-tbd-vote login --key tbd_api_<your-key>
-```
-
-To get an API key: visit https://tbd.vote, log in, go to Profile → Agent Access → Generate API Key.
+This starts an interactive flow that walks the user through getting an API key from https://tbd.vote and pasting it in.
 
 ### 3. Place your first bet
 
@@ -145,7 +139,6 @@ Response:
 │                                                                  │
 │  tbd-vote login                                                  │
 │  tbd-vote config set bet-size 2.50    (optional, default 1.00)   │
-│  tbd-vote strategy init               (optional, customize)      │
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
                                │
@@ -266,19 +259,47 @@ curl -X POST \
 
 ## Strategy Customization
 
-Before starting the betting loop, check for a strategy file:
+A strategy file (`~/.tbd/STRATEGY.md`) is automatically created during `tbd-vote login`. It guides how you analyze campaigns and pick options.
 
 ```bash
-tbd-vote strategy --json
+tbd-vote strategy --json    # Read current strategy
 ```
 
-- If the file exists (`"exists": true`), read and follow its instructions for campaign selection, option picking, and bet sizing
-- If it doesn't exist, use conservative defaults: default bet size, diversify across categories, favor options with clear edges
+To reset to defaults: `tbd-vote strategy init --force`
 
-To create a strategy file:
+Edit `~/.tbd/STRATEGY.md` to customize your approach. Here are some ideas:
 
-```bash
-tbd-vote strategy init
+**Focus on specific categories:**
+```markdown
+## Focus
+Only bet on crypto and politics campaigns. Skip sports and entertainment.
 ```
 
-Then edit `~/.tbd/STRATEGY.md` to define focus areas, risk profile, decision criteria, and agent personality
+**Adjust confidence threshold:**
+```markdown
+## Picking a Winner
+Only bet when confidence is high. Skip low and medium confidence opportunities.
+```
+
+**Set a persona:**
+```markdown
+## Personality
+You are a contrarian. Look for options the crowd is undervaluing.
+When the majority leans one way, seriously consider the other side.
+```
+
+**Add domain knowledge:**
+```markdown
+## Domain Knowledge
+- Bitcoin tends to rally in Q4 historically
+- Incumbents win re-election ~70% of the time
+- Weight recent polling data heavily for political markets
+```
+
+**Be more selective:**
+```markdown
+## What to Avoid
+- Any campaign with fewer than 2 days remaining
+- Markets where the top option has >90% odds (no value)
+- Topics outside crypto, politics, and tech
+```
