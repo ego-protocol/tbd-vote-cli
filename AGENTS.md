@@ -8,7 +8,7 @@ supported_assets:
   - USDC
 default_bet_size: 1.00
 rate_limits:
-  campaigns_read: 60/min
+  campaigns_read_and_balance: 60/min
   place_bet: 10/min
 ---
 
@@ -43,8 +43,11 @@ To get an API key: visit https://tbd.vote, log in, go to Profile → Agent Acces
 ### 3. Place your first bet
 
 ```bash
-# Browse open campaigns
-tbd-vote campaigns list --json --limit 3
+# Check your balance
+tbd-vote balance --json
+
+# Browse campaigns ending soonest
+tbd-vote campaigns list --json --filter ending --limit 10
 
 # Pick a campaign and place a bet
 tbd-vote bet <campaign-id> <option-id>
@@ -71,6 +74,13 @@ tbd-vote strategy init            # Create starter STRATEGY.md template
 tbd-vote strategy init --force    # Overwrite existing strategy file
 ```
 
+### Balance
+
+```bash
+tbd-vote balance              # Check USDC wallet balance
+tbd-vote balance --json       # { "balance": 12.50 }
+```
+
 ### Configuration
 
 ```bash
@@ -89,12 +99,15 @@ tbd-vote config list                    # Show all config
 ### Browsing Campaigns
 
 ```bash
-tbd-vote campaigns list --json                          # All open campaigns
-tbd-vote campaigns list --json --status open --limit 5  # Filtered
+tbd-vote campaigns list --json --limit 20                # All open campaigns (newest first)
+tbd-vote campaigns list --json --status open --limit 10 # Filtered
+tbd-vote campaigns list --json --filter ending          # Soonest ending first
 tbd-vote campaigns list --json --filter trending        # Trending campaigns
 tbd-vote campaigns list --json --cursor <cursor>        # Pagination
 tbd-vote campaigns get <campaign-id> --json             # Campaign detail
 ```
+
+**Sort order:** Default is newest first (`--filter new`). Use `--filter ending` to sort by soonest ending time.
 
 ### Placing Bets
 
@@ -108,9 +121,9 @@ Response:
 ```json
 {
   "txSignature": "5xYz...abc",
-  "campaignId": "01963b1a-...",
+  "campaignId": 123,
   "campaignTitle": "Will BTC hit $200k by July?",
-  "optionId": "opt-1",
+  "optionId": 2,
   "optionTitle": "Yes",
   "amount": 1.00
 }
@@ -118,33 +131,79 @@ Response:
 
 ## Autonomous Loop Instructions
 
-The CLI provides primitives for an autonomous browse-analyze-bet loop:
-
 ```
-1. BROWSE    tbd-vote campaigns list --json --status open
-2. ANALYZE   Read campaign data, evaluate odds, pick a bet (your logic)
-3. BET       tbd-vote bet <campaign-id> <option-id>
-4. REPEAT    Loop back to step 1
+┌──────────────────────────────────────────────────────────────────┐
+│ INSTALL (one-time)                                               │
+│                                                                  │
+│  npm install -g @tbd-vote/cli                                    │
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
+                               │
+                               ▼
+┌──────────────────────────────────────────────────────────────────┐
+│ CONFIGURE (one-time)                                             │
+│                                                                  │
+│  tbd-vote login                                                  │
+│  tbd-vote config set bet-size 2.50    (optional, default 1.00)   │
+│  tbd-vote strategy init               (optional, customize)      │
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
+                               │
+                               ▼
+┌──────────────────────────────────────────────────────────────────┐
+│ AUTONOMOUS LOOP (agent-orchestrated)                             │
+│                                                                  │
+│  ┌────────────────────────────────────────────────────────────┐  │
+│  │                                                            │  │
+│  │  1. BALANCE                                                │  │
+│  │     tbd-vote balance --json                                │  │
+│  │     → if balance < bet-size, skip or reduce amount         │  │
+│  │                                                            │  │
+│  │  2. BROWSE                                                 │  │
+│  │     tbd-vote campaigns list --json --status open           │  │
+│  │     Filters: --filter ending  (soonest first)              │  │
+│  │              --filter trending (most activity)              │  │
+│  │              --filter new     (newest, default)             │  │
+│  │              --category <cat>                               │  │
+│  │                                                            │  │
+│  │  3. ANALYZE                                                │  │
+│  │     Read campaign data, evaluate odds, pick a bet          │  │
+│  │     Read ~/.tbd/STRATEGY.md for context if present         │  │
+│  │     (this step is agent logic, not a CLI command)          │  │
+│  │                                                            │  │
+│  │  4. BET                                                    │  │
+│  │     tbd-vote bet <campaign-id> <option-id>                 │  │
+│  │     (uses configured bet-size, or pass amount override)    │  │
+│  │                                                            │  │
+│  │  5. REPEAT                                                 │  │
+│  │     Loop back to step 1                                    │  │
+│  │                                                            │  │
+│  └────────────────────────────────────────────────────────────┘  │
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 Example session:
 
 ```bash
-# Step 1: Get open campaigns
+# Step 1: Check balance
+tbd-vote balance --json
+
+# Step 2: Get open campaigns
 tbd-vote campaigns list --json --status open --limit 10
 
-# Step 2: Agent analyzes the response and picks a campaign
+# Step 3: Agent analyzes the response and picks a campaign
 # (this is your logic — evaluate odds, check userBets to avoid duplicates)
 
-# Step 3: Place a bet
-tbd-vote bet 01963b1a-... opt-1
+# Step 4: Place a bet
+tbd-vote bet 123 2
 
-# Step 4: Wait, then repeat
+# Step 5: Wait, then repeat
 ```
 
 **Tips:**
 - Check `userBets` in campaign responses to avoid duplicate bets
-- Respect rate limits: 60 reads/min, 10 bets/min
+- Respect rate limits: 60 reads+balance/min (shared), 10 bets/min
 - Sleep between requests when looping (e.g., 2-5 seconds)
 - Use `tbd-vote auth status` to verify connectivity before starting
 
@@ -164,6 +223,13 @@ curl -H "Authorization: Bearer tbd_api_<key>" \
 ```bash
 curl -H "Authorization: Bearer tbd_api_<key>" \
   "https://production-tbd-bets-api.tbd.vote/agents/campaigns/<campaign-id>"
+```
+
+### Check balance
+
+```bash
+curl -H "Authorization: Bearer tbd_api_<key>" \
+  "https://production-tbd-bets-api.tbd.vote/agents/balance"
 ```
 
 ### Place a bet

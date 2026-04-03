@@ -44,6 +44,10 @@ export interface PlaceBetResult {
   amount: number;
 }
 
+export interface BalanceResponse {
+  balance: number;
+}
+
 export interface ApiErrorResponse {
   error: string;
   message: string;
