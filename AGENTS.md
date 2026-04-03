@@ -26,19 +26,13 @@ npm install -g @tbd-vote/cli
 
 ### 2. Authenticate
 
-Interactive (recommended for first-time setup):
+**Important:** Do not run the login command yourself. Ask the user to run it in their own terminal:
 
 ```bash
 tbd-vote login
 ```
 
-Non-interactive (for scripting/CI):
-
-```bash
-tbd-vote login --key tbd_api_<your-key>
-```
-
-To get an API key: visit https://tbd.vote, log in, go to Profile → Agent Access → Generate API Key.
+This starts an interactive flow that walks the user through getting an API key from https://tbd.vote and pasting it in.
 
 ### 3. Place your first bet
 
