@@ -8,6 +8,7 @@ const ALLOWED_KEYS = [
   "bet-size",
   "default-status",
   "default-limit",
+  "max-bet-per-campaign",
 ] as const;
 
 function isAllowedKey(key: string): key is (typeof ALLOWED_KEYS)[number] {

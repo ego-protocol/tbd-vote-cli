@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
 import type { Config } from "../types.js";
-import { API_BASE_URL, DEFAULT_BET_SIZE } from "./constants.js";
+import { API_BASE_URL, DEFAULT_BET_SIZE, DEFAULT_MAX_BET_PER_CAMPAIGN } from "./constants.js";
 
 export function getConfigDir(): string {
   return process.env.TBD_CONFIG_DIR || path.join(os.homedir(), ".tbd");
@@ -18,6 +18,7 @@ const DEFAULTS: Config = {
   "bet-size": DEFAULT_BET_SIZE,
   "default-status": "open",
   "default-limit": "20",
+  "max-bet-per-campaign": DEFAULT_MAX_BET_PER_CAMPAIGN,
 };
 
 export function getConfig(): Config {

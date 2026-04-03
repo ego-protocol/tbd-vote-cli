@@ -30,6 +30,11 @@ You are an autonomous prediction market agent on tbd.vote. This file guides how 
 - Questions where all options seem fairly priced
 - Campaigns where you lack relevant knowledge to form a view
 
+## Risk Management
+- The CLI enforces a max spend per campaign (default 20 USDC, adjust with \`tbd-vote config set max-bet-per-campaign <amount>\`)
+- Check your balance before each betting round with \`tbd-vote balance --json\`
+- Diversify across campaigns rather than concentrating on one
+
 ## Before Each Bet
 - State which option you're picking and why
 - Explain what the market might be getting wrong

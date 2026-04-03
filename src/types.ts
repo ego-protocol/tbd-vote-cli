@@ -10,10 +10,15 @@ export interface CampaignOption {
 }
 
 export interface UserBet {
+  id: string;
+  campaignId: number;
   optionId: number;
-  optionLabel: string;
-  amount: number;
-  txSignature: string;
+  label: string;
+  betAmount: number;
+  status: string;
+  odds: number | null;
+  potentialWin: number | null;
+  createdAt: string;
 }
 
 export interface Campaign {
@@ -67,4 +72,5 @@ export interface Config {
   "bet-size": string;
   "default-status": string;
   "default-limit": string;
+  "max-bet-per-campaign": string;
 }
