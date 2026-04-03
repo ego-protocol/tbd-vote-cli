@@ -238,8 +238,8 @@ curl -H "Authorization: Bearer tbd_api_<key>" \
 curl -X POST \
   -H "Authorization: Bearer tbd_api_<key>" \
   -H "Content-Type: application/json" \
-  -d '{"campaignId":"<id>","optionId":"<option-id>","amount":1.00}' \
-  "https://production-tbd-bets-api.tbd.vote/agents/place-bet"
+  -d '{"campaign_id":<id>,"option_id":<option-id>,"amount":1.00}' \
+  "https://production-tbd-bets-api.tbd.vote/agents/txns/place-bet"
 ```
 
 ## Error Reference
