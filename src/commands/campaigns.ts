@@ -38,11 +38,11 @@ export function registerCampaigns(program: Command): void {
           printSuccess(data, true);
         } else {
           const rows = data.campaigns.map((c) => ({
-            id: c.id.length > 12 ? c.id.slice(0, 12) + "..." : c.id,
+            id: String(c.id),
             title:
-              c.title.length > 40 ? c.title.slice(0, 37) + "..." : c.title,
+              c.question.length > 40 ? c.question.slice(0, 37) + "..." : c.question,
             status: c.status,
-            ends: c.endDate ? c.endDate.split("T")[0] : "-",
+            ends: c.endTime ? c.endTime.split("T")[0] : "-",
           }));
 
           printTable(rows, [
@@ -52,9 +52,9 @@ export function registerCampaigns(program: Command): void {
             { key: "ends", label: "Ends" },
           ]);
 
-          if (data.cursor) {
+          if (data.nextCursor) {
             process.stdout.write(
-              `\nShowing ${data.campaigns.length} of ${data.total} campaigns. Next: tbd-vote campaigns list --cursor ${data.cursor}\n`,
+              `\nShowing ${data.campaigns.length} campaigns. Next: tbd-vote campaigns list --cursor ${data.nextCursor}\n`,
             );
           } else {
             process.stdout.write(
@@ -82,30 +82,26 @@ export function registerCampaigns(program: Command): void {
         if (jsonMode) {
           printSuccess(campaign, true);
         } else {
-          const endDate = campaign.endDate
-            ? campaign.endDate.split("T")[0]
+          const endDate = campaign.endTime
+            ? campaign.endTime.split("T")[0]
             : "-";
-          process.stdout.write(`${campaign.title}\n`);
+          process.stdout.write(`${campaign.question}\n`);
           process.stdout.write(
-            `Status: ${campaign.status} | Ends: ${endDate} | Category: ${campaign.category}\n`,
+            `Status: ${campaign.status} | Ends: ${endDate} | Category: ${campaign.category ?? "-"}\n`,
           );
-
-          if (campaign.description) {
-            process.stdout.write(`\n${campaign.description}\n`);
-          }
 
           process.stdout.write("\nOptions:\n");
           campaign.options.forEach((opt, i) => {
             process.stdout.write(
-              `  ${i + 1}. ${opt.title}  (odds: ${opt.odds})\n`,
+              `  ${i + 1}. ${opt.label}  (odds: ${opt.odds ?? "-"})\n`,
             );
           });
 
-          if (campaign.userBets.length > 0) {
+          if (campaign.userBets && campaign.userBets.length > 0) {
             process.stdout.write("\nYour bets:\n");
             campaign.userBets.forEach((bet) => {
               process.stdout.write(
-                `  $${bet.amount.toFixed(2)} on "${bet.optionTitle}" (tx: ${bet.txSignature})\n`,
+                `  $${bet.amount.toFixed(2)} on "${bet.optionLabel}" (tx: ${bet.txSignature})\n`,
               );
             });
           } else {

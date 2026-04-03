@@ -1,45 +1,43 @@
 export interface CampaignOption {
-  id: string;
-  title: string;
-  odds: number;
+  id: number;
+  label: string;
+  odds: number | null;
 }
 
 export interface UserBet {
-  optionId: string;
-  optionTitle: string;
+  optionId: number;
+  optionLabel: string;
   amount: number;
   txSignature: string;
 }
 
 export interface Campaign {
-  id: string;
-  title: string;
-  description?: string;
+  id: number;
+  question: string;
   status: string;
-  endDate: string;
-  category: string;
+  endTime: string;
+  category: string | null;
   options: CampaignOption[];
-  userBets: UserBet[];
+  userBets?: UserBet[];
 }
 
 export interface CampaignListResponse {
   campaigns: Campaign[];
-  cursor: string | null;
-  total: number;
+  nextCursor: string | null;
 }
 
 export interface PlaceBetApiResponse {
   txSignature: string;
-  campaignId: string;
-  optionId: string;
+  campaignId: number;
+  optionId: number;
   amount: number;
 }
 
 export interface PlaceBetResult {
   txSignature: string;
-  campaignId: string;
+  campaignId: number;
   campaignTitle: string;
-  optionId: string;
+  optionId: number;
   optionTitle: string;
   amount: number;
 }

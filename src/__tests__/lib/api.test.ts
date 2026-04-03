@@ -120,17 +120,17 @@ describe("apiPost", () => {
   it("sends POST with JSON body and auth header", async () => {
     mockFetch.mockResolvedValueOnce(jsonResponse({ txSignature: "abc123" }));
 
-    await apiPost("/agents/place-bet", {
-      campaignId: "c1",
-      optionId: "o1",
+    await apiPost("/agents/txns/place-bet", {
+      campaign_id: 1,
+      option_id: 2,
       amount: 1.0,
     });
 
     expect(mockFetch).toHaveBeenCalledWith(
-      "https://api.test.tbd.vote/agents/place-bet",
+      "https://api.test.tbd.vote/agents/txns/place-bet",
       expect.objectContaining({
         method: "POST",
-        body: JSON.stringify({ campaignId: "c1", optionId: "o1", amount: 1.0 }),
+        body: JSON.stringify({ campaign_id: 1, option_id: 2, amount: 1.0 }),
         headers: expect.objectContaining({
           Authorization: "Bearer tbd_api_testkey123",
           "Content-Type": "application/json",

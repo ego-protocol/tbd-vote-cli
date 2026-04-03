@@ -30,14 +30,15 @@ export function registerBet(program: Command): void {
           `/agents/campaigns/${campaignId}`,
         );
 
-        const option = campaign.options.find((o) => o.id === optionId);
+        const numOptionId = Number(optionId);
+        const option = campaign.options.find((o) => o.id === numOptionId);
         if (!option) {
           const valid = campaign.options
-            .map((o) => `${o.id} (${o.title})`)
+            .map((o) => `${o.id} (${o.label})`)
             .join(", ");
           printError(
             new Error(
-              `Invalid option "${optionId}" for campaign "${campaign.title}"\nValid options: ${valid}`,
+              `Invalid option "${optionId}" for campaign "${campaign.question}"\nValid options: ${valid}`,
             ),
             jsonMode,
           );
@@ -45,14 +46,14 @@ export function registerBet(program: Command): void {
         }
 
         const data = await apiPost<PlaceBetApiResponse>(
-          "/agents/place-bet",
-          { campaignId, optionId, amount },
+          "/agents/txns/place-bet",
+          { campaign_id: Number(campaignId), option_id: numOptionId, amount },
         );
 
         const result: PlaceBetResult = {
           ...data,
-          campaignTitle: campaign.title,
-          optionTitle: option.title,
+          campaignTitle: campaign.question,
+          optionTitle: option.label,
         };
 
         if (jsonMode) {
