@@ -1,6 +1,11 @@
 export interface CampaignOption {
   id: number;
   label: string;
+  image?: string;
+  betAmount: number;
+  betAmountPercentage: number;
+  betCount: number;
+  betCountPercentage: number;
   odds: number | null;
 }
 
@@ -14,11 +19,16 @@ export interface UserBet {
 export interface Campaign {
   id: number;
   question: string;
+  questionImage: string | null;
   status: string;
+  category: string;
+  totalBetAmount: number;
+  totalBetCount: number;
+  startTime: string;
   endTime: string;
-  category: string | null;
   options: CampaignOption[];
-  userBets?: UserBet[];
+  userBets: UserBet[];
+  liveVoteCount?: number;
 }
 
 export interface CampaignListResponse {
