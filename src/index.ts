@@ -3,6 +3,7 @@ import { registerLogin } from "./commands/login.js";
 import { registerAuth } from "./commands/auth.js";
 import { registerConfig } from "./commands/config.js";
 import { registerCampaigns } from "./commands/campaigns.js";
+import { registerBalance } from "./commands/balance.js";
 import { registerBet } from "./commands/bet.js";
 import { registerStrategy } from "./commands/strategy.js";
 
@@ -18,6 +19,7 @@ registerLogin(program);
 registerAuth(program);
 registerConfig(program);
 registerCampaigns(program);
+registerBalance(program);
 registerBet(program);
 registerStrategy(program);
 
