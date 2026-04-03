@@ -12,7 +12,7 @@ const program = new Command();
 program
   .name("tbd-vote")
   .description("CLI for AI agents to browse and bet on TBD")
-  .version("0.1.1")
+  .version("0.1.2")
   .option("--json", "Output as JSON");
 
 registerLogin(program);

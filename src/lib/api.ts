@@ -72,7 +72,11 @@ export async function apiPost<T>(
 
 async function handleResponse<T>(response: Response): Promise<T> {
   if (response.ok) {
-    return (await response.json()) as T;
+    const body = await response.json();
+    if (body.responseObject !== undefined) {
+      return body.responseObject as T;
+    }
+    return body as T;
   }
 
   if (response.status === 429) {

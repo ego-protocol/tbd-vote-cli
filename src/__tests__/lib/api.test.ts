@@ -27,7 +27,7 @@ function jsonResponse(data: unknown, status = 200, headers: Record<string, strin
 
 describe("apiGet", () => {
   it("sends GET with auth header", async () => {
-    mockFetch.mockResolvedValueOnce(jsonResponse({ campaigns: [] }));
+    mockFetch.mockResolvedValueOnce(jsonResponse({ success: true, responseObject: { campaigns: [] } }));
 
     await apiGet("/agents/campaigns");
 
@@ -41,8 +41,24 @@ describe("apiGet", () => {
     );
   });
 
+  it("unwraps responseObject from API response", async () => {
+    mockFetch.mockResolvedValueOnce(
+      jsonResponse({ success: true, responseObject: { balance: 12.5 } }),
+    );
+
+    const result = await apiGet<{ balance: number }>("/agents/balance");
+    expect(result).toEqual({ balance: 12.5 });
+  });
+
+  it("returns body directly when no responseObject", async () => {
+    mockFetch.mockResolvedValueOnce(jsonResponse({ raw: "data" }));
+
+    const result = await apiGet<{ raw: string }>("/test");
+    expect(result).toEqual({ raw: "data" });
+  });
+
   it("passes query params correctly", async () => {
-    mockFetch.mockResolvedValueOnce(jsonResponse({ campaigns: [] }));
+    mockFetch.mockResolvedValueOnce(jsonResponse({ success: true, responseObject: { campaigns: [] } }));
 
     await apiGet("/agents/campaigns", { status: "open", limit: "5" });
 
@@ -52,7 +68,7 @@ describe("apiGet", () => {
   });
 
   it("skips undefined params", async () => {
-    mockFetch.mockResolvedValueOnce(jsonResponse({ campaigns: [] }));
+    mockFetch.mockResolvedValueOnce(jsonResponse({ success: true, responseObject: { campaigns: [] } }));
 
     await apiGet("/agents/campaigns", { status: "open", cursor: undefined });
 
@@ -118,7 +134,7 @@ describe("apiGet", () => {
 
 describe("apiPost", () => {
   it("sends POST with JSON body and auth header", async () => {
-    mockFetch.mockResolvedValueOnce(jsonResponse({ txSignature: "abc123" }));
+    mockFetch.mockResolvedValueOnce(jsonResponse({ success: true, responseObject: { txSignature: "abc123" } }));
 
     await apiPost("/agents/txns/place-bet", {
       campaign_id: 1,

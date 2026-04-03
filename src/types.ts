@@ -1,24 +1,39 @@
 export interface CampaignOption {
   id: number;
   label: string;
+  image?: string;
+  betAmount: number;
+  betAmountPercentage: number;
+  betCount: number;
+  betCountPercentage: number;
   odds: number | null;
 }
 
 export interface UserBet {
+  id: string;
+  campaignId: number;
   optionId: number;
-  optionLabel: string;
-  amount: number;
-  txSignature: string;
+  label: string;
+  betAmount: number;
+  status: string;
+  odds: number | null;
+  potentialWin: number | null;
+  createdAt: string;
 }
 
 export interface Campaign {
   id: number;
   question: string;
+  questionImage: string | null;
   status: string;
+  category: string;
+  totalBetAmount: number;
+  totalBetCount: number;
+  startTime: string;
   endTime: string;
-  category: string | null;
   options: CampaignOption[];
-  userBets?: UserBet[];
+  userBets: UserBet[];
+  liveVoteCount?: number;
 }
 
 export interface CampaignListResponse {
@@ -57,4 +72,5 @@ export interface Config {
   "bet-size": string;
   "default-status": string;
   "default-limit": string;
+  "max-bet-per-campaign": string;
 }

@@ -89,6 +89,7 @@ tbd-vote config list                    # Show all config
 | `bet-size` | `1.00` | Default bet amount (USDC) |
 | `default-status` | `open` | Default status filter |
 | `default-limit` | `20` | Default page size |
+| `max-bet-per-campaign` | `20.00` | Max USDC to spend on a single campaign |
 
 ### Browsing Campaigns
 
@@ -255,6 +256,7 @@ curl -X POST \
 - Use `tbd-vote auth status` to verify connectivity before starting a loop
 - Store bet results (txSignature) for portfolio tracking
 - Configure `bet-size` to control default wager amount
+- The CLI enforces `max-bet-per-campaign` (default 20 USDC) — total spend across all options on one campaign
 - Use `--limit` and `--cursor` for efficient pagination
 
 ## Strategy Customization
