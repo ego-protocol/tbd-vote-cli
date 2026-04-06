@@ -90,6 +90,18 @@ export function registerCampaigns(program: Command): void {
             `Status: ${campaign.status} | Ends: ${endDate} | Category: ${campaign.category ?? "-"}\n`,
           );
 
+          if (campaign.target) {
+            const parts: string[] = [];
+            if (campaign.target.countries?.length) parts.push(campaign.target.countries.join(", "));
+            if (campaign.target.genders?.length) parts.push(campaign.target.genders.join(", "));
+            if (campaign.target.yob_ranges?.length) {
+              const ranges = campaign.target.yob_ranges.map((r) => `${r.start}-${r.end}`).join(", ");
+              parts.push(`born ${ranges}`);
+            }
+            if (campaign.target.groups?.length) parts.push(`groups: ${campaign.target.groups.join(", ")}`);
+            if (parts.length) process.stdout.write(`Target: ${parts.join(" | ")}\n`);
+          }
+
           process.stdout.write("\nOptions:\n");
           campaign.options.forEach((opt, i) => {
             process.stdout.write(
