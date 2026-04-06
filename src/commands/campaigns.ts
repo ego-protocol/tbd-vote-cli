@@ -4,6 +4,16 @@ import { apiGet } from "../lib/api.js";
 import { printSuccess, printError, printTable } from "../lib/output.js";
 import type { Campaign, CampaignListResponse } from "../types.js";
 
+function formatLocalTime(iso: string): string {
+  const d = new Date(iso);
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  const hh = String(d.getHours()).padStart(2, "0");
+  const min = String(d.getMinutes()).padStart(2, "0");
+  return `${yyyy}-${mm}-${dd} ${hh}:${min}`;
+}
+
 function formatTarget(c: Campaign): string {
   if (!c.target) return "-";
   const parts: string[] = [];
@@ -55,7 +65,7 @@ export function registerCampaigns(program: Command): void {
             title:
               c.question.length > 40 ? c.question.slice(0, 37) + "..." : c.question,
             status: c.status,
-            ends: c.endTime ? c.endTime.split("T")[0] : "-",
+            ends: c.endTime ? formatLocalTime(c.endTime) : "-",
             target: formatTarget(c),
           }));
 
@@ -98,7 +108,7 @@ export function registerCampaigns(program: Command): void {
           printSuccess(campaign, true);
         } else {
           const endDate = campaign.endTime
-            ? campaign.endTime.split("T")[0]
+            ? formatLocalTime(campaign.endTime)
             : "-";
           process.stdout.write(`${campaign.question}\n`);
           process.stdout.write(
