@@ -4,6 +4,19 @@ import { apiGet } from "../lib/api.js";
 import { printSuccess, printError, printTable } from "../lib/output.js";
 import type { Campaign, CampaignListResponse } from "../types.js";
 
+function formatTarget(c: Campaign): string {
+  if (!c.target) return "-";
+  const parts: string[] = [];
+  if (c.target.countries?.length) parts.push(c.target.countries.join(", "));
+  if (c.target.genders?.length) parts.push(c.target.genders.join(", "));
+  if (c.target.yob_ranges?.length) {
+    const ranges = c.target.yob_ranges.map((r) => `${r.start}-${r.end}`).join(", ");
+    parts.push(`born ${ranges}`);
+  }
+  if (c.target.groups?.length) parts.push(`groups: ${c.target.groups.join(", ")}`);
+  return parts.length ? parts.join(" | ") : "-";
+}
+
 export function registerCampaigns(program: Command): void {
   const campaigns = program
     .command("campaigns")
@@ -43,6 +56,7 @@ export function registerCampaigns(program: Command): void {
               c.question.length > 40 ? c.question.slice(0, 37) + "..." : c.question,
             status: c.status,
             ends: c.endTime ? c.endTime.split("T")[0] : "-",
+            target: formatTarget(c),
           }));
 
           printTable(rows, [
@@ -50,6 +64,7 @@ export function registerCampaigns(program: Command): void {
             { key: "title", label: "Title" },
             { key: "status", label: "Status" },
             { key: "ends", label: "Ends" },
+            { key: "target", label: "Target" },
           ]);
 
           if (data.nextCursor) {
@@ -90,16 +105,9 @@ export function registerCampaigns(program: Command): void {
             `Status: ${campaign.status} | Ends: ${endDate} | Category: ${campaign.category ?? "-"}\n`,
           );
 
-          if (campaign.target) {
-            const parts: string[] = [];
-            if (campaign.target.countries?.length) parts.push(campaign.target.countries.join(", "));
-            if (campaign.target.genders?.length) parts.push(campaign.target.genders.join(", "));
-            if (campaign.target.yob_ranges?.length) {
-              const ranges = campaign.target.yob_ranges.map((r) => `${r.start}-${r.end}`).join(", ");
-              parts.push(`born ${ranges}`);
-            }
-            if (campaign.target.groups?.length) parts.push(`groups: ${campaign.target.groups.join(", ")}`);
-            if (parts.length) process.stdout.write(`Target: ${parts.join(" | ")}\n`);
+          const target = formatTarget(campaign);
+          if (target !== "-") {
+            process.stdout.write(`Target: ${target}\n`);
           }
 
           process.stdout.write("\nOptions:\n");
