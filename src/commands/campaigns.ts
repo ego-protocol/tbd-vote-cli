@@ -4,6 +4,29 @@ import { apiGet } from "../lib/api.js";
 import { printSuccess, printError, printTable } from "../lib/output.js";
 import type { Campaign, CampaignListResponse } from "../types.js";
 
+function formatLocalTime(iso: string): string {
+  const d = new Date(iso);
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  const hh = String(d.getHours()).padStart(2, "0");
+  const min = String(d.getMinutes()).padStart(2, "0");
+  return `${yyyy}-${mm}-${dd} ${hh}:${min}`;
+}
+
+function formatTarget(c: Campaign): string {
+  if (!c.target) return "-";
+  const parts: string[] = [];
+  if (c.target.countries?.length) parts.push(c.target.countries.join(", "));
+  if (c.target.genders?.length) parts.push(c.target.genders.join(", "));
+  if (c.target.yob_ranges?.length) {
+    const ranges = c.target.yob_ranges.map((r) => `${r.start}-${r.end}`).join(", ");
+    parts.push(`born ${ranges}`);
+  }
+  if (c.target.groups?.length) parts.push(`groups: ${c.target.groups.join(", ")}`);
+  return parts.length ? parts.join(" | ") : "-";
+}
+
 export function registerCampaigns(program: Command): void {
   const campaigns = program
     .command("campaigns")
@@ -42,7 +65,8 @@ export function registerCampaigns(program: Command): void {
             title:
               c.question.length > 40 ? c.question.slice(0, 37) + "..." : c.question,
             status: c.status,
-            ends: c.endTime ? c.endTime.split("T")[0] : "-",
+            ends: c.endTime ? formatLocalTime(c.endTime) : "-",
+            target: formatTarget(c),
           }));
 
           printTable(rows, [
@@ -50,6 +74,7 @@ export function registerCampaigns(program: Command): void {
             { key: "title", label: "Title" },
             { key: "status", label: "Status" },
             { key: "ends", label: "Ends" },
+            { key: "target", label: "Target" },
           ]);
 
           if (data.nextCursor) {
@@ -83,12 +108,17 @@ export function registerCampaigns(program: Command): void {
           printSuccess(campaign, true);
         } else {
           const endDate = campaign.endTime
-            ? campaign.endTime.split("T")[0]
+            ? formatLocalTime(campaign.endTime)
             : "-";
           process.stdout.write(`${campaign.question}\n`);
           process.stdout.write(
             `Status: ${campaign.status} | Ends: ${endDate} | Category: ${campaign.category ?? "-"}\n`,
           );
+
+          const target = formatTarget(campaign);
+          if (target !== "-") {
+            process.stdout.write(`Target: ${target}\n`);
+          }
 
           process.stdout.write("\nOptions:\n");
           campaign.options.forEach((opt, i) => {

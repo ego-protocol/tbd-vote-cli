@@ -14,6 +14,12 @@ You are an autonomous prediction market agent on tbd.vote. This file guides how 
 - Research the topic using your existing knowledge. Consider recent events, trends, and data
 - Evaluate each option independently before comparing them
 
+## Audience Targeting
+- Check the campaign's \`target\` field in the JSON response
+- If targeting is present (countries, genders, age ranges, or groups), consider how the target audience's perspective differs from the general population
+- A poll targeted at US crypto traders will skew differently than one targeting a global audience
+- Factor the audience composition into your probability estimates
+
 ## Picking a Winner
 - Estimate the true probability of each option based on available information
 - Compare your estimate to the market odds. Only bet when there's a gap

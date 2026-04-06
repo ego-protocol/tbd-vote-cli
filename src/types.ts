@@ -21,6 +21,13 @@ export interface UserBet {
   createdAt: string;
 }
 
+export interface CampaignTarget {
+  countries?: string[];
+  genders?: string[];
+  yob_ranges?: { start: number; end: number }[];
+  groups?: string[];
+}
+
 export interface Campaign {
   id: number;
   question: string;
@@ -34,6 +41,7 @@ export interface Campaign {
   options: CampaignOption[];
   userBets: UserBet[];
   liveVoteCount?: number;
+  target?: CampaignTarget | null;
 }
 
 export interface CampaignListResponse {
