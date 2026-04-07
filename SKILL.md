@@ -1,12 +1,12 @@
 ---
-name: tbd-predict
-description: "Trade on TBD Predict, a Solana-based prediction market for human opinions, using the @tbd-vote/cli npm package. TRIGGER when: the user mentions tbd.vote, TBD Predict, or @tbd-vote/cli; asks to bet, trade, or wager on an opinion or poll on TBD; or wants to list or browse opinion-market campaigns on Solana. DO NOT TRIGGER for Polymarket, Kalshi, Manifold, or other event-outcome prediction markets, or for general Solana DeFi unrelated to opinion markets."
+name: tbd
+description: "Trade on TBD, a Solana-based prediction market for human opinions, using the @tbd-vote/cli npm package. TRIGGER when: the user mentions tbd.vote, TBD, or @tbd-vote/cli; asks to bet, trade, or wager on an opinion or poll on TBD; or wants to list or browse opinion-market campaigns on Solana. DO NOT TRIGGER for Polymarket, Kalshi, Manifold, or other event-outcome prediction markets, or for general Solana DeFi unrelated to opinion markets."
 license: MIT
 ---
 
-# TBD Predict — Solana Prediction Market for Human Opinions
+# TBD — Solana Prediction Market for Human Opinions
 
-[TBD Predict](https://www.tbd.vote) is a Solana-based prediction market where users wager on human opinions — what people think, prefer, and predict — rather than purely objective event outcomes.
+[TBD](https://www.tbd.vote) is a Solana-based prediction market where users wager on human opinions — what people think, prefer, and predict — rather than purely objective event outcomes.
 
 **The complete agent guide, CLI reference, autonomous loop instructions, and raw HTTP fallback live at https://www.tbd.vote/agents/AGENTS.md — read that file as the source of truth for anything not covered below.**
 
