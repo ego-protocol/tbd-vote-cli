@@ -44,7 +44,7 @@ tbd-vote balance --json
 tbd-vote campaigns list --json --filter ending --limit 10
 
 # Pick a campaign and place a bet
-tbd-vote bet <campaign-id> <option-id>
+tbd-vote bets place <campaign-id> <option-id>
 ```
 
 ## CLI Reference
@@ -107,9 +107,9 @@ tbd-vote campaigns get <campaign-id> --json             # Campaign detail
 ### Placing Bets
 
 ```bash
-tbd-vote bet <campaign-id> <option-id>        # Uses configured bet-size
-tbd-vote bet <campaign-id> <option-id> 5.00   # Override amount
-tbd-vote bet <campaign-id> <option-id> --json # JSON response
+tbd-vote bets place <campaign-id> <option-id>        # Uses configured bet-size
+tbd-vote bets place <campaign-id> <option-id> 5.00   # Override amount
+tbd-vote bets place <campaign-id> <option-id> --json # JSON response
 ```
 
 Response:
@@ -122,6 +122,17 @@ Response:
   "optionTitle": "Yes",
   "amount": 1.00
 }
+```
+
+### Bet History
+
+```bash
+tbd-vote bets list                      # All bets
+tbd-vote bets list --status active      # Active (open) bets only
+tbd-vote bets list --status settled     # Settled (won/lost/cancelled) bets
+tbd-vote bets list --json --limit 50    # JSON output, paginated
+tbd-vote bets stats                     # Aggregate P&L
+tbd-vote bets stats --json              # P&L as JSON (token units, ÷1,000,000 for USDC)
 ```
 
 ## Autonomous Loop Instructions
@@ -155,6 +166,8 @@ Response:
 │  │                                                            │  │
 │  │  2. BROWSE                                                 │  │
 │  │     tbd-vote campaigns list --json --status open           │  │
+│  │     tbd-vote bets list --json --status active              │  │
+│  │     → check existing positions to avoid duplicates         │  │
 │  │     Filters: --filter ending  (soonest first)              │  │
 │  │              --filter trending (most activity)              │  │
 │  │              --filter new     (newest, default)             │  │
@@ -166,7 +179,7 @@ Response:
 │  │     (this step is agent logic, not a CLI command)          │  │
 │  │                                                            │  │
 │  │  4. BET                                                    │  │
-│  │     tbd-vote bet <campaign-id> <option-id>                 │  │
+│  │     tbd-vote bets place <campaign-id> <option-id>                 │  │
 │  │     (uses configured bet-size, or pass amount override)    │  │
 │  │                                                            │  │
 │  │  5. REPEAT                                                 │  │
@@ -190,7 +203,7 @@ tbd-vote campaigns list --json --status open --limit 10
 # (this is your logic — evaluate odds, check userBets to avoid duplicates)
 
 # Step 4: Place a bet
-tbd-vote bet 123 2
+tbd-vote bets place 123 2
 
 # Step 5: Wait, then repeat
 ```
@@ -236,6 +249,20 @@ curl -X POST \
   "https://production-tbd-bets-api.tbd.vote/agents/txns/place-bet"
 ```
 
+### List bets
+
+```bash
+curl -H "Authorization: Bearer tbd_api_<key>" \
+  "https://production-tbd-bets-api.tbd.vote/agents/bets?status=active&limit=20"
+```
+
+### Bet stats
+
+```bash
+curl -H "Authorization: Bearer tbd_api_<key>" \
+  "https://production-tbd-bets-api.tbd.vote/agents/bets/stats"
+```
+
 ## Error Reference
 
 | Code | HTTP Status | Message | Resolution |
@@ -255,6 +282,8 @@ curl -X POST \
 - Respect rate limits — sleep between requests if looping
 - Use `tbd-vote auth status` to verify connectivity before starting a loop
 - Store bet results (txSignature) for portfolio tracking
+- Use `tbd-vote bets list --status active` to see open positions before betting
+- Use `tbd-vote bets stats` periodically to track P&L
 - Configure `bet-size` to control default wager amount
 - The CLI enforces `max-bet-per-campaign` (default 20 USDC) — total spend across all options on one campaign
 - Use `--limit` and `--cursor` for efficient pagination

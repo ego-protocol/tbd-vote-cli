@@ -13,7 +13,7 @@ npm install -g @tbd-vote/cli
 ```bash
 tbd-vote login                          # authenticate with API key
 tbd-vote campaigns list --json          # browse open campaigns
-tbd-vote bet <campaign-id> <option-id>  # place a bet
+tbd-vote bets place <campaign-id> <option-id>  # place a bet
 ```
 
 ## Documentation
