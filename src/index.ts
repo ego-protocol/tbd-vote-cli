@@ -5,6 +5,7 @@ import { registerConfig } from "./commands/config.js";
 import { registerCampaigns } from "./commands/campaigns.js";
 import { registerBalance } from "./commands/balance.js";
 import { registerBet } from "./commands/bet.js";
+import { registerBets } from "./commands/bets.js";
 import { registerStrategy } from "./commands/strategy.js";
 
 const program = new Command();
@@ -12,7 +13,7 @@ const program = new Command();
 program
   .name("tbd-vote")
   .description("CLI for AI agents to browse and bet on TBD")
-  .version("0.1.3")
+  .version("0.1.4")
   .option("--json", "Output as JSON");
 
 registerLogin(program);
@@ -21,6 +22,7 @@ registerConfig(program);
 registerCampaigns(program);
 registerBalance(program);
 registerBet(program);
+registerBets(program);
 registerStrategy(program);
 
 program.parse();

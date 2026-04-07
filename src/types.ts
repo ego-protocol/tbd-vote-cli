@@ -9,16 +9,52 @@ export interface CampaignOption {
   odds: number | null;
 }
 
+// Status returned in bet responses (DB enum)
+export enum BetStatus {
+  Active = "active",
+  Won = "won",
+  Lost = "lost",
+  Cancelled = "cancelled",
+}
+
+// Filter values accepted by GET /agents/bets ?status=
+export enum BetStatusFilter {
+  Active = "active",
+  Settled = "settled",
+}
+
 export interface UserBet {
   id: string;
   campaignId: number;
+  question?: string;
+  questionImage?: string;
+  shareImageUrl?: string | null;
   optionId: number;
   label: string;
+  image?: string;
   betAmount: number;
-  status: string;
-  odds: number | null;
-  potentialWin: number | null;
+  status: BetStatus;
+  actualPayoutAmount?: number | null;
+  endTime?: string;
+  settledTime?: string | null;
   createdAt: string;
+  odds?: number | null;
+  potentialWin?: number | null;
+}
+
+export interface BetsListResponse {
+  bets: UserBet[];
+  nextCursor: string | null;
+}
+
+export interface BetStatsResponse {
+  totalBets: number;
+  activeBets: number;
+  settledBets: number;
+  winningBets: number;
+  totalWon: number;
+  totalLost: number;
+  totalActive: number;
 }
 
 export interface CampaignTarget {

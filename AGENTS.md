@@ -124,6 +124,17 @@ Response:
 }
 ```
 
+### Bet History
+
+```bash
+tbd-vote bets list                      # All bets
+tbd-vote bets list --status active      # Active (open) bets only
+tbd-vote bets list --status settled     # Settled (won/lost/cancelled) bets
+tbd-vote bets list --json --limit 50    # JSON output, paginated
+tbd-vote bets stats                     # Aggregate P&L
+tbd-vote bets stats --json              # P&L as JSON (token units, ÷1,000,000 for USDC)
+```
+
 ## Autonomous Loop Instructions
 
 ```
@@ -155,6 +166,8 @@ Response:
 │  │                                                            │  │
 │  │  2. BROWSE                                                 │  │
 │  │     tbd-vote campaigns list --json --status open           │  │
+│  │     tbd-vote bets list --json --status active              │  │
+│  │     → check existing positions to avoid duplicates         │  │
 │  │     Filters: --filter ending  (soonest first)              │  │
 │  │              --filter trending (most activity)              │  │
 │  │              --filter new     (newest, default)             │  │
@@ -236,6 +249,20 @@ curl -X POST \
   "https://production-tbd-bets-api.tbd.vote/agents/txns/place-bet"
 ```
 
+### List bets
+
+```bash
+curl -H "Authorization: Bearer tbd_api_<key>" \
+  "https://production-tbd-bets-api.tbd.vote/agents/bets?status=active&limit=20"
+```
+
+### Bet stats
+
+```bash
+curl -H "Authorization: Bearer tbd_api_<key>" \
+  "https://production-tbd-bets-api.tbd.vote/agents/bets/stats"
+```
+
 ## Error Reference
 
 | Code | HTTP Status | Message | Resolution |
@@ -255,6 +282,8 @@ curl -X POST \
 - Respect rate limits — sleep between requests if looping
 - Use `tbd-vote auth status` to verify connectivity before starting a loop
 - Store bet results (txSignature) for portfolio tracking
+- Use `tbd-vote bets list --status active` to see open positions before betting
+- Use `tbd-vote bets stats` periodically to track P&L
 - Configure `bet-size` to control default wager amount
 - The CLI enforces `max-bet-per-campaign` (default 20 USDC) — total spend across all options on one campaign
 - Use `--limit` and `--cursor` for efficient pagination
