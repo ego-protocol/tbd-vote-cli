@@ -1,6 +1,6 @@
 {
   "name": "@tbd-vote/cli",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "description": "CLI for AI agents to browse and bet on TBD",
   "bin": {
     "tbd-vote": "./dist/index.js"

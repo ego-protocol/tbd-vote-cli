@@ -44,7 +44,7 @@ tbd-vote balance --json
 tbd-vote campaigns list --json --filter ending --limit 10
 
 # Pick a campaign and place a bet
-tbd-vote bet <campaign-id> <option-id>
+tbd-vote bets place <campaign-id> <option-id>
 ```
 
 ## CLI Reference
@@ -107,9 +107,9 @@ tbd-vote campaigns get <campaign-id> --json             # Campaign detail
 ### Placing Bets
 
 ```bash
-tbd-vote bet <campaign-id> <option-id>        # Uses configured bet-size
-tbd-vote bet <campaign-id> <option-id> 5.00   # Override amount
-tbd-vote bet <campaign-id> <option-id> --json # JSON response
+tbd-vote bets place <campaign-id> <option-id>        # Uses configured bet-size
+tbd-vote bets place <campaign-id> <option-id> 5.00   # Override amount
+tbd-vote bets place <campaign-id> <option-id> --json # JSON response
 ```
 
 Response:
@@ -179,7 +179,7 @@ tbd-vote bets stats --json              # P&L as JSON (token units, ÷1,000,000 
 │  │     (this step is agent logic, not a CLI command)          │  │
 │  │                                                            │  │
 │  │  4. BET                                                    │  │
-│  │     tbd-vote bet <campaign-id> <option-id>                 │  │
+│  │     tbd-vote bets place <campaign-id> <option-id>                 │  │
 │  │     (uses configured bet-size, or pass amount override)    │  │
 │  │                                                            │  │
 │  │  5. REPEAT                                                 │  │
@@ -203,7 +203,7 @@ tbd-vote campaigns list --json --status open --limit 10
 # (this is your logic — evaluate odds, check userBets to avoid duplicates)
 
 # Step 4: Place a bet
-tbd-vote bet 123 2
+tbd-vote bets place 123 2
 
 # Step 5: Wait, then repeat
 ```
